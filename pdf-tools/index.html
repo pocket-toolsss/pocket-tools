@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF 與圖片互轉 - Pocket Tools</title>
+
+  <style>
+    /* ==========================================================================
+       Pocket Tools - Pure High-End Mineral Grey Theme (No Blue, Pure Elegance)
+       ========================================================================== */
+    :root {
+      --bg-main: #f3f4f6;          /* 薄霧礦石淺灰背景 */
+      --bg-surface: #ffffff;       /* 純白高階面板 */
+      --bg-input: #f8fafc;         /* 低調灰輸入框 */
+      --bg-chip: #e2e8f0;          /* 標籤預設灰色 */
+
+      --border-light: #e2e8f0;     /* 輕盈細微邊線 */
+      --border-strong: #0f172a;    /* 深黑石墨邊框 */
+
+      --text-main: #0f172a;        /* 高級深黑石墨文字 */
+      --text-secondary: #475569;   /* 質感灰次要文字 */
+      --text-muted: #94a3b8;
+
+      --accent-primary: #0f172a;   /* 經典純黑 */
+      --accent-hover: #334155;     /* 深炭灰 */
+
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+
+      --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      --shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.12);
+
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 20px 40px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 60px;  
+      margin-bottom: 35px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    h1 .gray-text {
+      color: var(--text-secondary);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* 上下排版容器：改為單欄垂直置中 */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 720px;
+      width: 100%;
+    }
+
+    .panel {
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-subtle);
+      border: 1px solid var(--border-light);
+    }
+
+    /* 模式切換器外框 */
+    .mode-tabs-container {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border-strong);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--text-main);
+    }
+
+    .file-input-wrapper {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .file-input-wrapper:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-select-file {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .file-name-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .loading-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 14px;
+      font-weight: 600;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-light);
+      border-top-color: var(--text-main);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      background-color: var(--text-main);
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 20px;
+      transition: var(--transition);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+    }
+
+    .btn-primary:disabled {
+      background: var(--border-light);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* 下方預覽面板樣式 */
+    .preview-panel {
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .placeholder-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .result-list {
+      width: 100%;
+      max-height: 460px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .result-item:hover {
+      border-color: var(--border-strong);
+    }
+
+    .result-item span {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-download {
+      background: var(--text-main);
+      color: #ffffff;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .btn-download:hover {
+      background: var(--accent-hover);
+    }
+
+    .preview-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      max-height: 460px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .preview-thumb {
+      aspect-ratio: 1;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-input);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-back-floating {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background-color: var(--text-main);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .btn-back-floating:hover {
+      background-color: var(--accent-hover);
+    }
+
+    @media (max-width: 600px) {
+      .preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+
+  <!-- 引入 jsPDF 與 pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>PDF 與圖片互轉</h1>
+    <div class="subtitle">100% 本機瀏覽器端處理，照片絕不上傳至任何伺服器</div>
+  </header>
+
+  <main class="app-container">
+    <!-- 上方：控制面板 -->
+    <section class="panel">
+      
+      <!-- 模式切換面板 -->
+      <div class="mode-tabs-container">
+        <button id="tabPdfToImg" class="tab-btn active" onclick="switchMode('pdfToImg')">PDF 轉圖片</button>
+        <button id="tabImgToPdf" class="tab-btn" onclick="switchMode('imgToPdf')">圖片轉 PDF</button>
+      </div>
+
+      <!-- 模式 A：PDF 轉圖片 -->
+      <div id="controlsPdfToImg">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">1. 選擇 PDF 檔案：</label>
+          <div class="file-input-wrapper" onclick="document.getElementById('pdfFile').click()">
+            <button class="btn-select-file" type="button">選擇檔案</button>
+            <span class="file-name-text" id="pdfFileName">未選擇任何檔案</span>
+          </div>
+          <input type="file" id="pdfFile" accept="application/pdf" style="display: none;" onchange="handlePdfUpload(event)">
+        </div>
+        <div id="pdfLoading" class="loading-container" style="display: none;">
+          <div class="spinner"></div>
+          <span>正在解析 PDF 頁面，請稍候...</span>
+        </div>
+      </div>
+
+      <!-- 模式 B：圖片轉 PDF -->
+      <div id="controlsImgToPdf" style="display: none;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">1. 選擇圖片：</label>
+          <div class="file-input-wrapper" onclick="document.getElementById('imgFiles').click()">
+            <button class="btn-select-file" type="button">選擇多張圖片</button>
+            <span class="file-name-text" id="imgFileCount">未選擇任何圖片</span>
+          </div>
+          <input type="file" id="imgFiles" accept="image/*" multiple style="display: none;" onchange="handleImgUpload(event)">
+        </div>
+        <button id="convertToPdfBtn" onclick="generatePdf()" class="btn-primary" style="display: none;">
+          下載為 PDF 檔案
+        </button>
+      </div>
+
+    </section>
+
+    <!-- 下方：預覽與結果區 -->
+    <section class="panel preview-panel">
+      <span class="placeholder-text" id="placeholderText">請上傳 PDF 檔案以預覽頁面</span>
+      
+      <!-- PDF 轉圖片結果清單 -->
+      <div id="pdfResultList" class="result-list" style="display: none;"></div>
+
+      <!-- 圖片轉 PDF 預覽網格 -->
+      <div id="imgPreviewList" class="preview-grid" style="display: none;"></div>
+    </section>
+  </main>
+
+  <!-- 右下角返回首頁 -->
+  <a href="../index.html" class="btn-back-floating">返回首頁</a>
+
+  <script>
+    function switchMode(mode) {
+      const btnPdf = document.getElementById('tabPdfToImg');
+      const btnImg = document.getElementById('tabImgToPdf');
+      const ctrlPdf = document.getElementById('controlsPdfToImg');
+      const ctrlImg = document.getElementById('controlsImgToPdf');
+      const placeholder = document.getElementById('placeholderText');
+      const pdfList = document.getElementById('pdfResultList');
+      const imgList = document.getElementById('imgPreviewList');
+
+      placeholder.style.display = 'block';
+      pdfList.style.display = 'none';
+      pdfList.innerHTML = '';
+      imgList.style.display = 'none';
+      imgList.innerHTML = '';
+      document.getElementById('convertToPdfBtn').style.display = 'none';
+      document.getElementById('pdfFileName').textContent = '未選擇任何檔案';
+      document.getElementById('imgFileCount').textContent = '未選擇任何圖片';
+
+      if (mode === 'pdfToImg') {
+        btnPdf.classList.add('active');
+        btnImg.classList.remove('active');
+        ctrlPdf.style.display = 'block';
+        ctrlImg.style.display = 'none';
+        placeholder.textContent = '請上傳 PDF 檔案以預覽頁面';
+      } else {
+        btnImg.classList.add('active');
+        btnPdf.classList.remove('active');
+        ctrlImg.style.display = 'block';
+        ctrlPdf.style.display = 'none';
+        placeholder.textContent = '請選取圖片以預覽效果';
+      }
+    }
+
+    async function handlePdfUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      document.getElementById('pdfFileName').textContent = file.name;
+
+      const loading = document.getElementById('pdfLoading');
+      const placeholder = document.getElementById('placeholderText');
+      const resultList = document.getElementById('pdfResultList');
+      
+      loading.style.display = 'flex';
+      placeholder.style.display = 'none';
+      resultList.innerHTML = '';
+      resultList.style.display = 'flex';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        loading.style.display = 'none';
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          const imgUrl = canvas.toDataURL('image/png');
+
+          const item = document.createElement('div');
+          item.className = 'result-item';
+          item.innerHTML = `
+            <span>第 ${i} 頁</span>
+            <a href="${imgUrl}" download="page_${i}.png" class="btn-download">下載圖片</a>
+          `;
+          resultList.appendChild(item);
+        }
+      } catch (error) {
+        loading.style.display = 'none';
+        alert('解析 PDF 失敗，檔案可能已損毀或加密。');
+      }
+    }
+
+    let selectedImages = [];
+    function handleImgUpload(event) {
+      const files = Array.from(event.target.files);
+      if (files.length === 0) return;
+
+      selectedImages = files;
+      document.getElementById('imgFileCount').textContent = `已選取 ${files.length} 張圖片`;
+
+      const placeholder = document.getElementById('placeholderText');
+      const previewList = document.getElementById('imgPreviewList');
+      const convertBtn = document.getElementById('convertToPdfBtn');
+      
+      placeholder.style.display = 'none';
+      previewList.innerHTML = '';
+      previewList.style.display = 'grid';
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const div = document.createElement('div');
+          div.className = 'preview-thumb';
+          div.innerHTML = `<img src="${e.target.result}">`;
+          previewList.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      convertBtn.style.display = 'block';
+    }
+
+    async function generatePdf() {
+      if (selectedImages.length === 0) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      for (let i = 0; i < selectedImages.length; i++) {
+        const file = selectedImages[i];
+        const base64 = await toBase64(file);
+
+        if (i > 0) doc.addPage();
+
+        const img = new Image();
+        img.src = base64;
+        await new Promise((resolve) => { img.onload = resolve; });
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const ratio = Math.min(pageWidth / img.width, pageHeight / img.height);
+        const width = img.width * ratio;
+        const height = img.height * ratio;
+
+        doc.addImage(base64, 'JPEG', (pageWidth - width) / 2, (pageHeight - height) / 2, width, height);
+      }
+
+      doc.save('converted-document.pdf');
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+  </script>
+
+</body>
+</html>
