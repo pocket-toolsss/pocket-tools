@@ -1,47 +1,200 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="googlec67b98cfe8362ecb.html" />
-  <title>Pocket Tools - 隨手實用工具箱</title>
-  <link rel="stylesheet" href="style.css?v=2026">
+  <title>Pocket Tools - 免費安全的線上極簡工具箱 | 本機隱私保護</title>
+  
+  <meta name="description" content="Pocket Tools 提供免費、極速且重視隱私的線上實用工具（證件浮水印產生器、圖片壓縮與轉檔器）。採用瀏覽器本機端技術，所有檔案不上傳伺服器。">
+
+  <style>
+    :root {
+      --primary-grey: #222222;
+      --secondary-grey: #666666;
+      --light-grey: #e5e5e5;
+      --bg-color: #f7f7f7;
+      --card-bg: #ffffff;
+      --badge-bg: #ededed;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--primary-grey);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      padding: 60px 20px;
+      box-sizing: border-box;
+      flex: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 0 0 12px 0;
+      color: var(--primary-grey);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--secondary-grey);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .safety-badge {
+      display: inline-block;
+      background-color: var(--badge-bg);
+      color: var(--secondary-grey);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--light-grey);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .tool-card {
+      background-color: var(--card-bg);
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--light-grey);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s ease;
+    }
+
+    .tool-card:hover {
+      border-color: var(--primary-grey);
+    }
+
+    .tool-card h2 {
+      font-size: 1.25rem;
+      margin: 0 0 12px 0;
+      color: var(--primary-grey);
+    }
+
+    .tool-card p {
+      color: var(--secondary-grey);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 30px 0;
+      flex: 1;
+    }
+
+    .btn-link {
+      display: block;
+      width: 100%;
+      background-color: var(--primary-grey);
+      color: #ffffff;
+      text-align: center;
+      padding: 12px 0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-link:hover {
+      background-color: #444444;
+    }
+
+    footer {
+      width: 100%;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--secondary-grey);
+      box-sizing: border-box;
+      border-top: 1px solid var(--light-grey);
+      background-color: #ffffff;
+    }
+
+    .sponsor-btn {
+      display: inline-block;
+      background-color: transparent;
+      color: var(--primary-grey);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      border: 1px solid var(--light-grey);
+      transition: all 0.2s;
+    }
+
+    .sponsor-btn:hover {
+      background-color: var(--badge-bg);
+      border-color: var(--primary-grey);
+    }
+
+    @media (max-width: 480px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Pocket <span>Tools</span></h1>
-      <p>輕巧、快速、100% 本機安全的線上工具箱</p>
-    </div>
-  </header>
 
-  <main class="container">
-    <div class="tools-grid">
-      <a href="watermark/index.html" class="tool-card">
-        <div class="tool-icon-wrapper">
-          <svg class="svg-icon" viewBox="0 0 24 24">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+  <div class="container">
+    <header>
+      <h1>Pocket Tools</h1>
+      <p class="subtitle">極簡、免費且重視隱私的線上工具箱</p>
+      <span class="safety-badge">純瀏覽器端本機運算，資料不上傳伺服器</span>
+    </header>
+
+    <main class="tools-grid">
+      <div class="tool-card">
+        <div>
+          <h2>證件安全浮水印產生器</h2>
+          <p>專為身分證、駕照、健保卡等敏感證件設計。快速疊加指定用途浮水印，確保個人資安防護。</p>
         </div>
-        <h2>證件安全浮水印</h2>
-        <p>為身分證、護照等敏感照片加上專用浮水印，全本機運算不上傳伺服器。</p>
-        <span class="btn-link">
-          立即使用 
-          <svg class="svg-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </span>
-      </a>
-    </div>
-  </main>
+        <a href="./watermark/index.html" class="btn-link">進入工具</a>
+      </div>
+
+      <div class="tool-card">
+        <div>
+          <h2>圖片壓縮與轉檔器</h2>
+          <p>支援 JPG、PNG、WebP 格式轉換與檔案大小壓縮。免上傳伺服器，快速調降照片體積。</p>
+        </div>
+        <a href="./image-compressor/index.html" class="btn-link">進入工具</a>
+      </div>
+    </main>
+  </div>
 
   <footer>
-    <div class="container">
-      <p>&copy; Pocket Tools. 保留所有權利。</p>
+    <p>© 2026 Pocket Tools. 本機安全處理，保護個人隱私。</p>
+    <div>
+      <a href="#" target="_blank" class="sponsor-btn">贊助支持</a>
     </div>
   </footer>
+
 </body>
 </html>
