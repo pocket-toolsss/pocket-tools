@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圖片壓縮與轉檔 - Pocket Tools</title>
+
+  <style>
+    :root {
+      --bg-color: #f4f5f7;
+      --card-bg: #ffffff;
+      --primary-text: #18191c;
+      --secondary-text: #61666d;
+      --border-color: #e3e5e7;
+      --input-bg: #f6f7f8;
+      --btn-black: #18191c;
+      --btn-black-hover: #313338;
+      --title-gray: #2c3e50; /* 壓縮與轉檔的深灰色 */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--primary-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-text); /* 預設整體黑色 */
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    /* 讓後半段「壓縮與轉檔」變成灰色 */
+    h1 .gray-text {
+      color: var(--title-gray);
+    }
+
+    .subtitle {
+      color: var(--secondary-text);
+      font-size: 0.95rem;
+    }
+
+    .app-container {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      align-items: start;
+    }
+
+    .panel {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      display: block;
+      color: var(--primary-text);
+    }
+
+    .file-input-wrapper {
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .btn-select-file {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .file-name-text {
+      font-size: 0.85rem;
+      color: var(--secondary-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    select, input[type="range"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background-color: var(--input-bg);
+      color: var(--primary-text);
+      outline: none;
+    }
+
+    select:focus {
+      border-color: var(--btn-black);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background-color: var(--input-bg);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-title {
+      font-size: 0.75rem;
+      color: var(--secondary-text);
+      margin-bottom: 4px;
+    }
+
+    .info-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-text);
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      background-color: var(--btn-black);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 20px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--btn-black-hover);
+    }
+
+    .btn-primary.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .preview-panel {
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .placeholder-text {
+      color: #a0a5ab;
+      font-size: 0.95rem;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .btn-back-floating {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background-color: var(--btn-black);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.2s, transform 0.1s;
+      z-index: 1000;
+    }
+
+    .btn-back-floating:hover {
+      background-color: var(--btn-black-hover);
+    }
+
+    @media (max-width: 850px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      .preview-panel {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>圖片<span class="gray-text">壓縮與轉檔</span></h1>
+    <div class="subtitle">100% 本機瀏覽器端處理，照片絕不上傳至任何伺服器</div>
+  </header>
+
+  <main class="app-container">
+    <section class="panel">
+      <div class="form-group">
+        <label class="form-label">1. 選擇圖片：</label>
+        <div class="file-input-wrapper" onclick="document.getElementById('fileInput').click()">
+          <button class="btn-select-file" type="button">選擇檔案</button>
+          <span class="file-name-text" id="fileNameText">未選擇任何檔案</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp" style="display: none;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="formatSelect">2. 輸出格式：</label>
+        <select id="formatSelect">
+          <option value="image/jpeg">JPG / JPEG (通用推薦)</option>
+          <option value="image/webp">WebP (高壓縮率)</option>
+          <option value="image/png">PNG (無損品質)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="qualityGroup">
+        <label class="form-label" for="qualityRange">3. 壓縮品質：<span id="qualityVal">80</span>%</label>
+        <input type="range" id="qualityRange" min="10" max="100" value="80">
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-title">原始大小</div>
+          <div class="info-val" id="originalSize">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-title">預估大小</div>
+          <div class="info-val" id="compressedSize">-</div>
+        </div>
+      </div>
+
+      <a id="downloadBtn" class="btn-primary disabled" download="compressed-image">下載圖片</a>
+    </section>
+
+    <section class="panel preview-panel">
+      <span class="placeholder-text" id="placeholderText">請上傳圖片以預覽效果</span>
+      <img id="previewImage" class="preview-image" style="display: none;" alt="壓縮後預覽">
+    </section>
+  </main>
+
+  <a href="../index.html" class="btn-back-floating">返回首頁</a>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameText = document.getElementById('fileNameText');
+    const formatSelect = document.getElementById('formatSelect');
+    const qualityRange = document.getElementById('qualityRange');
+    const qualityVal = document.getElementById('qualityVal');
+    const qualityGroup = document.getElementById('qualityGroup');
+    const originalSize = document.getElementById('originalSize');
+    const compressedSize = document.getElementById('compressedSize');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const placeholderText = document.getElementById('placeholderText');
+    const previewImage = document.getElementById('previewImage');
+
+    let originalImage = new Image();
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file.type.match('image.*')) {
+        alert('請上傳正確的圖片檔案');
+        return;
+      }
+
+      fileNameText.textContent = file.name;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage.src = e.target.result;
+        originalImage.onload = () => {
+          originalSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+          processImage();
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function processImage() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = originalImage.width;
+      canvas.height = originalImage.height;
+      ctx.drawImage(originalImage, 0, 0);
+
+      const mimeType = formatSelect.value;
+      const quality = parseFloat(qualityRange.value) / 100;
+
+      if (mimeType === 'image/png') {
+        qualityGroup.style.opacity = '0.3';
+        qualityRange.disabled = true;
+      } else {
+        qualityGroup.style.opacity = '1';
+        qualityRange.disabled = false;
+      }
+
+      const dataUrl = canvas.toDataURL(mimeType, quality);
+
+      const head = `data:${mimeType};base64,`;
+      const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
+      compressedSize.textContent = `${(sizeInBytes / 1024).toFixed(1)} KB`;
+
+      previewImage.src = dataUrl;
+      previewImage.style.display = 'block';
+      placeholderText.style.display = 'none';
+
+      downloadBtn.href = dataUrl;
+      const ext = mimeType.split('/')[1];
+      downloadBtn.download = `compressed_${new Date().getTime()}.${ext}`;
+      downloadBtn.classList.remove('disabled');
+    }
+
+    formatSelect.addEventListener('change', () => {
+      if (originalImage.src) processImage();
+    });
+
+    qualityRange.addEventListener('input', (e) => {
+      qualityVal.textContent = e.target.value;
+      if (originalImage.src) processImage();
+    });
+  </script>
+
+</body>
+</html>
