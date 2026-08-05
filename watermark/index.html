@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>證件安全浮水印 - Pocket Tools</title>
+  <link rel="stylesheet" href="../style.css?v=2026">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="back-link">
+        <svg class="svg-icon" viewBox="0 0 24 24">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        返回 Pocket Tools 首頁
+      </a>
+      <h1>證件安全<span>浮水印</span></h1>
+      <p>100% 本機瀏覽器端處理，照片絕不上傳至任何伺服器</p>
+    </div>
+  </header>
 
+  <main class="container">
+    <div class="watermark-app">
+      <div class="controls-panel">
+        <div class="form-group">
+          <label for="imageInput">1. 選擇圖片：</label>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <!-- 精簡為最常用的 3 個情境 -->
+        <div class="form-group">
+          <label>常用情境快選：</label>
+          <div class="preset-chips">
+            <button type="button" class="chip active" data-text="僅限申辦信用卡使用 他用無效">辦理信用卡</button>
+            <button type="button" class="chip" data-text="僅限房地產租買簽約使用 他用無效">房地產買賣</button>
+            <button type="button" class="chip" data-text="僅限個人身份核驗使用 他用無效">身份核驗</button>
+          </div>
+        </div>
+
+        <!-- 自訂浮水印文字 -->
+        <div class="form-group">
+          <label for="watermarkText">2. 浮水印自訂文字：</label>
+          <input type="text" id="watermarkText" value="僅限申辦信用卡使用 他用無效">
+        </div>
+
+        <!-- 預設顏色改為灰色 #888888 -->
+        <div class="form-group">
+          <label for="textColor">3. 文字顏色：</label>
+          <input type="color" id="textColor" value="#888888">
+        </div>
+
+        <div class="form-group">
+          <label for="opacity">4. 透明度：</label>
+          <input type="range" id="opacity" min="0.1" max="1" step="0.05" value="0.35">
+        </div>
+
+        <div class="form-group">
+          <label for="fontSize">5. 字體大小：</label>
+          <input type="range" id="fontSize" min="12" max="72" value="24">
+        </div>
+
+        <button id="downloadBtn" class="btn-primary" disabled>下載加水印圖片</button>
+      </div>
+
+      <div class="preview-panel">
+        <canvas id="previewCanvas"></canvas>
+        <p id="placeholderText">請上傳圖片以預覽效果</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
